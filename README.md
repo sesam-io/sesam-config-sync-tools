@@ -8,6 +8,7 @@ Tools to synchronize config between a Sesam Instance and local file system
 
 ## Configure
 
+    ## in the directory you want to sync files to and from
     $ cp ~/sesam-config-sync-tools/syncconfig-template .syncconfig
     ## edit the file and put in your values
 

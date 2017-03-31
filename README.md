@@ -4,7 +4,7 @@ Tools to synchronize config between a Sesam Instance and local file system
 ## Installation
 
     $ git clone -q https://github.com/sesam-io/sesam-config-sync-tools ~/sesam-config-sync-tools
-    $ ln -s ~/sesam-config-sync-tools/*.sh ~/bin
+    $ ln -s ~/sesam-config-sync-tools/sesam-* ~/bin
 
 ## Configure
 
@@ -13,7 +13,7 @@ Tools to synchronize config between a Sesam Instance and local file system
 
 ## Usage
 
-    $ status.sh 
+    $ sesam-status
     diff -r node/node-metadata.conf.json local/node-metadata.conf.json
     4c4
     <   "namespaced_identifiers": false,
@@ -21,20 +21,20 @@ Tools to synchronize config between a Sesam Instance and local file system
     >   "namespaced_identifiers": true,
     Node config is NOT in sync with local config.
 
-    $ upload.sh 
+    $ sesam-upload 
     Node config replaced with local config.
 
-    $ status.sh 
+    $ sesam-status
     Node config is up-to-date with local config.
     
     ## (you add something to the node)
     
-    $ status.sh 
+    $ sesam-status
     Only in node/pipes: my-pipe.conf.json
     Node config is NOT in sync with local config.
     
-    $ download.sh 
+    $ sesam-download
     Local config replaced by node config.
     
-    $ status.sh 
+    $ sesam-status
     Node config is up-to-date with local config.

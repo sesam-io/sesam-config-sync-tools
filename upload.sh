@@ -3,8 +3,9 @@
 # Uploads and replaces node config with files from local disk
 #
 source .syncconfig
+JWT=${JWT/[Aa]uthorization:/}
 zip -qr config.zip . -i '*.conf.json'
-curl -s -XPUT -H "Content-Type: application/zip" -H "$JWT" --data-binary @config.zip "https://$NODE/api/config" > result.json
+curl -s -XPUT -H "Content-Type: application/zip" -H "Authorization: $JWT" --data-binary @config.zip "https://$NODE/api/config" > result.json
 error=$?
 rm config.zip
 if [ $error -ne 0 ]

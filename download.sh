@@ -3,7 +3,8 @@
 # Downloads and replaces local config with config found on the node
 #
 source .syncconfig
-curl -so config.zip -H "Accept: application/zip" -H "$JWT" "https://$NODE/api/config"
+JWT=${JWT/[Aa]uthorization:/}
+curl -so config.zip -H "Accept: application/zip" -H "Authorization: $JWT" "https://$NODE/api/config"
 if [ $? -ne 0 ]
 then
    echo "Failed to download config from the node. Maybe the JWT has expired?"

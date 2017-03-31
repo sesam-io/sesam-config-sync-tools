@@ -3,7 +3,8 @@
 # Compares local config with config on the node
 #
 source .syncconfig
-curl -so node.zip -H "Accept: application/zip" -H "$JWT" "https://$NODE/api/config"
+JWT=${JWT/[Aa]uthorization:/}
+curl -so node.zip -H "Accept: application/zip" -H "Authorization: $JWT" "https://$NODE/api/config"
 zip -q local.zip -r . -i '*.conf.json'
 unzip -q node.zip -d node
 unzip -q local.zip -d local

@@ -1,9 +1,14 @@
 #
 # Configfile for the sync scripts
 #
-# Replace values and rename to .syncconfig
+# Replace the values and rename to .syncconfig
 #
 # Tip! Request a long lived token in the portal to avoid token expiry.
+#
+# Example:
+#
+# NODE="myproject.sesam.cloud"
+# JWT="bearer eyJhbGciOiJSUzI1...."
 #
 NODE="<hostname>"
 JWT="<jwt with bearer>"

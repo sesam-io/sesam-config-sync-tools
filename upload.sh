@@ -10,6 +10,7 @@ error=$?
 rm config.zip
 if [ $error -ne 0 ]
 then
+   rm result.json
    echo "Failed to upload config to the node. Maybe the JWT has expired?"
    exit 1
 fi

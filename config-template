@@ -1,0 +1,9 @@
+#
+# Configfile for the sync scripts
+#
+# Replace values and rename to .syncconfig
+#
+# Tip! Request a long lived token in the portal to avoid token expiry.
+#
+NODE="<hostname>"
+JWT="<jwt with bearer>"

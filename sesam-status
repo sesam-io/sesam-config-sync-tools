@@ -4,7 +4,12 @@
 #
 source .syncconfig
 JWT=${JWT/[Aa]uthorization:/}
-curl -so node.zip -H "Accept: application/zip" -H "Authorization: $JWT" "https://$NODE/api/config"
+curl -fso node.zip -H "Accept: application/zip" -H "Authorization: $JWT" "https://$NODE/api/config"
+if [ $error -ne 0 ]
+then
+   echo "Failed to fetch config from node. Has the JWT expired?"
+   exit 1
+fi
 zip -q local.zip -r . -i '*.conf.json'
 unzip -q node.zip -d node
 unzip -q local.zip -d local

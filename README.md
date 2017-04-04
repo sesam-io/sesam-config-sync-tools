@@ -1,6 +1,9 @@
 # sesam-config-sync-tools
 Tools to synchronize config between a Sesam Instance and local file system
 
+Requires bash, curl, zip/unzip, diff and [jq](https://stedolan.github.io/jq/).
+
+
 ## Installation
 
     $ git clone -q https://github.com/sesam-io/sesam-config-sync-tools ~/sesam-config-sync-tools

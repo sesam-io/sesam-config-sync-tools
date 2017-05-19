@@ -9,6 +9,8 @@
 #
 # NODE_URL="https://09164791.sesam.cloud/api"
 # JWT="bearer eyJhbGciOiJSUzI1...."
+# NODE_PATH="path/to/dir/" # Path inside git repository where the node configuration is stored.
 #
 NODE_URL="<connection url>"
 JWT="<jwt with bearer>"
+NODE_PATH="<path>"

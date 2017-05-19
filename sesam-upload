@@ -5,7 +5,7 @@
 source .syncconfig
 JWT=${JWT/[Aa]uthorization:/}
 zip -qr config.zip . -i '*.conf.json'
-curl -fs -XPUT -H "Content-Type: application/zip" -H "Authorization: $JWT" --data-binary @config.zip "https://$NODE/api/config" -o result.json
+curl -fs -XPUT -H "Content-Type: application/zip" -H "Authorization: $JWT" --data-binary @config.zip "$NODE/config" -o result.json
 error=$?
 rm -f config.zip
 if [ $error -ne 0 ]

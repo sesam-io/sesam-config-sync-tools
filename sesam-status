@@ -2,24 +2,47 @@
 #
 # Compares local config with config on the node
 #
-source .syncconfig
+if ! git rev-parse --git-dir > /dev/null 2>&1;
+then
+   echo "Not a git repo"
+   exit 1
+fi
+
+git_root=$(git rev-parse --show-toplevel)
+source $git_root/.syncconfig
+if [ $? -ne 0 ]
+then
+   exit 1
+fi
+
+if [ -z ${NODE_PATH+x} ];then
+   config_path=$git_root
+else
+   config_path=$git_root/$NODE_PATH
+   if [ ! -d "$config_path" ];then
+      echo "$config_path is not a valid directory"
+      exit 1
+   fi
+fi
+
 JWT=${JWT/[Aa]uthorization:/}
-curl -fso node.zip -H "Accept: application/zip" -H "Authorization: $JWT" "https://$NODE/api/config"
+curl -fso $config_path/node.zip -H "Accept: application/zip" -H "Authorization: $JWT" "$NODE/config"
 if [ $? -ne 0 ]
 then
    echo "Failed to fetch config from node. Has the JWT expired?"
    exit 1
 fi
+cd $config_path
 zip -q local.zip -r . -i '*.conf.json'
-unzip -q node.zip -d node
-unzip -q local.zip -d local
-diff -r node local
+unzip -q node.zip -d _node
+unzip -q local.zip -d _local
+git --no-pager diff --no-index _node _local
 error=$?
-rm -r node.zip local.zip node local
+rm -r node.zip local.zip _node _local
 if [ $error -eq 0 ]
 then
-   echo "Node config is up-to-date with local config."
+   echo "Remote Node config is up-to-date with local config."
 else
-   echo "Node config is NOT in sync with local config."
+   echo "Remote Node config is NOT in sync with local config."
    exit 1
 fi

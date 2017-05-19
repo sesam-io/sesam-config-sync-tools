@@ -2,14 +2,37 @@
 #
 # Downloads and replaces local config with config found on the node
 #
-source .syncconfig
+if ! git rev-parse --git-dir > /dev/null 2>&1;
+then
+   echo "Not a git repo"
+   exit 1
+fi
+
+git_root=$(git rev-parse --show-toplevel)
+source $git_root/.syncconfig
+if [ $? -ne 0 ]
+then
+   exit 1
+fi
+
+if [ -z ${NODE_PATH+x} ];then
+   config_path=$git_root
+else
+   config_path=$git_root/$NODE_PATH
+   if [ ! -d "$config_path" ];then
+      echo "$config_path is not a valid directory"
+      exit 1
+   fi
+fi
+
 JWT=${JWT/[Aa]uthorization:/}
-curl -fso config.zip -H "Accept: application/zip" -H "Authorization: $JWT" "https://$NODE/api/config"
+curl -fso $config_path/config.zip -H "Accept: application/zip" -H "Authorization: $JWT" "$NODE/config"
 if [ $? -ne 0 ]
 then
    echo "Failed to download config from the node. Maybe the JWT has expired?"
    exit 1
 fi
+cd $config_path
 rm -f *.conf.json
 rm -f pipes/*.conf.json
 rm -f systems/*.conf.json

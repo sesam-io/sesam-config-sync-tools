@@ -2,22 +2,46 @@
 #
 # Uploads and replaces node config with files from local disk
 #
-source .syncconfig
-JWT=${JWT/[Aa]uthorization:/}
-zip -qr config.zip . -i '*.conf.json'
-curl -fs -XPUT -H "Content-Type: application/zip" -H "Authorization: $JWT" --data-binary @config.zip "https://$NODE/api/config" -o result.json
-error=$?
-rm -f config.zip
-if [ $error -ne 0 ]
+if ! git rev-parse --git-dir > /dev/null 2>&1;
 then
+   echo "Not a git repo"
+   exit 1
+fi
+
+git_root=$(git rev-parse --show-toplevel)
+source $git_root/.syncconfig
+if [ $? -ne 0 ]
+then
+   exit 1
+fi
+
+if [ -z ${NODE_PATH+x} ];then
+   config_path=$git_root
+else
+   config_path=$git_root/$NODE_PATH
+   if [ ! -d "$config_path" ];then
+      echo "$config_path is not a valid directory"
+      exit 1
+   fi
+fi
+
+JWT=${JWT/[Aa]uthorization:/}
+cd $config_path
+zip -qr config.zip . -i '*.conf.json'
+curl -s -XPUT -H "Content-Type: application/zip" -H "Authorization: $JWT" --data-binary @config.zip "$NODE/config" -o result.json
+rm -f config.zip
+response=`jq 'if .validation_errors then true else false end' result.json`
+if [ "$response" != "true" ]
+then
+   cat result.json
    rm result.json
    echo "Failed to upload config to the node. Maybe the JWT has expired?"
    exit 1
 fi
-error=`jq '.validation_errors|length' result.json`
+error=`jq '[.validation_errors[]| {(."posted-config"._id): ."config-errors"[]| select(.level == "error")}]|length' result.json`
 if [ $error -ne 0 ]
 then
-   jq '.' result.json
+   jq '[.validation_errors[]| {(."posted-config"._id): ."config-errors"[]| select(.level == "error")}]' result.json
    echo "Failed to upload config to the node: $error validation error(s)!"
    echo "(Hints provided in messages above)"
    rm result.json
